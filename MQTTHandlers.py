@@ -2,7 +2,14 @@
 import paho.mqtt.client as paho
 import sys
 import time
+import logging
 
+logging.basicConfig(
+    filename="C:\RV-COLLEGE-OF-ENGINEERING\Sixth Semester\CNP\EL\MQTT_protocol\code\logs\mqtt_log.log",
+    level = logging.DEBUG
+)
+
+LOGGER = logging.getLogger(__name__)
 
 def onMessage(client, userdata, msg):
     print(msg.topic + ":" + msg.payload.decode())
@@ -42,6 +49,7 @@ class MQTTPublish:
 
         self.start_time = time.time()
 
+
     def connect(self):
         """
         Method to establish connection with the MQTT broker.
@@ -52,10 +60,13 @@ class MQTTPublish:
         """
         self.client_result = self.client.connect(host=self.host, port=self.port, keepalive=self.timeout)
         if self.client_result != 0:
-            print("Could not connect to client!")
+            # print("Could not connect to client!")
+            LOGGER.error("PUB : Could not connect to client!")
             sys.exit(-1)
+
         elif self.client_result == 0:
-            print("Connection to client established!")
+            # print("Connection to client established!")
+            LOGGER.info("PUB : Connection to client established!")
     
     def publish(self):
         self.client.publish(self.topic, self.message, self.qos)
@@ -74,19 +85,33 @@ class MQTTPublish:
         while True:
             try:
                 print("Press CTRL+C to exit....")
+                LOGGER.debug("PUB : Running the publish loop")
                 self.publish()
+                LOGGER.debug("PUB : Published message to network")
                 time.sleep(5)
 
                 if (time.time() - self.start_time >= 200):
-                    print("Disconnecting the publisher....")
+                    # print("Disconnecting the publisher....")
+                    LOGGER.warning("PUB : Disconnecting from broker!")
                     self.disconnect()
                     break 
             except:
-                print("Disconnecting from broker!")
+                # print("Disconnecting from broker!")
+                LOGGER.warning("PUB : Disconnecting from broker!")
                 self.disconnect()
     
     def disconnect(self):
+        """
+        Method to disconnect from the MQTT broker.
+
+        Disconnects the client from the MQTT broker by calling the disconnect method of the MQTT client object.
+        Logs a message indicating successful disconnection from the network using the LOGGER object.
+
+        Returns:
+            None
+        """
         self.client.disconnect()
+        LOGGER.info("PUB : Disconnected from network!")
     
     def start_loop(self):
         """
@@ -145,10 +170,12 @@ class MQTTSubscribe:
         """
         self.client_result = self.client.connect(host=self.host, port=self.port, keepalive=self.timeout)
         if self.client_result != 0:
-            print("Could not connect to client!")
+            # print("Could not connect to client!")
+            LOGGER.error("SUB : Could not connect to client!")
             sys.exit(-1)
         elif self.client_result == 0:
-            print("Connection to client established!")
+            # print("Connection to client established!")
+            LOGGER.info("SUB : Connection to client established!")
     
     def subscribe(self):
         self.client.subscribe(self.topic)
@@ -166,13 +193,25 @@ class MQTTSubscribe:
         """
         try:
             print("Press CTRL+C to exit....")
+            LOGGER.info("SUB : Subscriber waiting for packets")
             self.client.loop_forever()
         except:
-            print("Disconnecting from Broker")
+            # print("Disconnecting from Broker")
+            LOGGER.warning("SUB : Disconnecting from broker!")
             self.disconnect()
     
     def disconnect(self):
+        """
+        Method to disconnect from the MQTT broker.
+
+        Disconnects the client from the MQTT broker by calling the disconnect method of the MQTT client object.
+        Logs a message indicating successful disconnection from the network using the LOGGER object.
+
+        Returns:
+            None
+        """
         self.client.disconnect()
+        LOGGER.info("SUB : Disconnected from network!")
     
     def start_loop(self):
         """
