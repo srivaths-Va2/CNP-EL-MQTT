@@ -3,9 +3,14 @@ import paho.mqtt.client as paho
 import sys
 import time
 import logging
+import os
+from json_parser import JSON_Parser
+
+
+LOG_DIR = JSON_Parser().get_logging_logdir()
 
 logging.basicConfig(
-    filename="C:\RV-COLLEGE-OF-ENGINEERING\Sixth Semester\CNP\EL\MQTT_protocol\code\logs\mqtt_log.log",
+    filename=os.path.join(LOG_DIR, JSON_Parser().get_logging_filename()),
     level = logging.DEBUG
 )
 
@@ -39,13 +44,13 @@ class MQTTPublish:
     def __init__(self) -> None:
         self.client = paho.Client(paho.CallbackAPIVersion.VERSION1)
 
-        self.port = 1883
-        self.timeout = 60
-        self.host = 'localhost'
+        self.port = JSON_Parser().get_mqtt_port()
+        self.timeout = JSON_Parser().get_mqtt_timeout()
+        self.host = JSON_Parser().get_mqtt_host()
 
-        self.topic = "test/status"
-        self.message = "Hello World!"
-        self.qos = 0
+        self.topic = JSON_Parser().get_msg_topic()
+        self.message = JSON_Parser().get_msg_payload()
+        self.qos = JSON_Parser().get_mqtt_qos()
 
         self.start_time = time.time()
 
@@ -152,13 +157,13 @@ class MQTTSubscribe:
         self.client = paho.Client(paho.CallbackAPIVersion.VERSION1)
         self.client.on_message = onMessage
 
-        self.host = 'localhost'
-        self.port = 1883
-        self.timeout = 60
+        self.host = JSON_Parser().get_mqtt_host()
+        self.port = JSON_Parser().get_mqtt_port()
+        self.timeout = JSON_Parser().get_mqtt_timeout()
 
-        self.topic = "test/status"
-        self.message = "Hello World!"
-        self.qos = 0
+        self.topic = JSON_Parser().get_msg_topic()
+        self.message = JSON_Parser().get_msg_payload()
+        self.qos = JSON_Parser().get_mqtt_qos()
 
     def connect(self):
         """

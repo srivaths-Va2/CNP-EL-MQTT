@@ -1,0 +1,17 @@
+{
+    "systemparams":{
+        "mqtt_port":1883,
+        "mqtt_host":"localhost",
+        "mqtt_timeout":60,
+        "mqtt_qos":0
+    },
+    "messageparams":{
+        "msg_topic":"test/status",
+        "payload":"Hello World!"
+    },
+    "logging":{
+        "log_dir":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\CNP-EL-MQTT\\logs",
+        "filename":"log1.log",
+        "level":"DEBUG"
+    }
+}
