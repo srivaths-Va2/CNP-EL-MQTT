@@ -8,10 +8,12 @@ from json_parser import JSON_Parser
 
 
 LOG_DIR = JSON_Parser().get_logging_logdir()
+LOG_LVL = getattr(logging, JSON_Parser().get_logging_level().upper())
+
 
 logging.basicConfig(
     filename=os.path.join(LOG_DIR, JSON_Parser().get_logging_filename()),
-    level = logging.DEBUG
+    level = LOG_LVL
 )
 
 LOGGER = logging.getLogger(__name__)

@@ -11,7 +11,7 @@
     },
     "logging":{
         "log_dir":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\CNP-EL-MQTT\\logs",
-        "filename":"log1.log",
+        "filename":"mqtt_log.log",
         "level":"DEBUG"
     }
 }

@@ -4,7 +4,7 @@ import json
 import os
 
 # Globals
-JSON_DIR = "C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\code\\config"
+JSON_DIR = "C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\CNP-EL-MQTT\\config"
 
 class JSON_Parser:
     """
