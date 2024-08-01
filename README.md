@@ -6,6 +6,7 @@ This repository contains Python scripts for handling MQTT publish and subscribe 
 
 - [Description](#description)
 - [Installation](#installation)
+- [TLS Setup](#tlssetup)
 - [Usage](#usage)
 
 ## Description
@@ -44,6 +45,31 @@ The following tools are required in addition to Python3:
     [Download](https://www.wireshark.org/download.html)
 
 
+## TLS Setup
+
+1. For setting up TLS to run the application with encryption, one must install the required certificates for the client and the server. The certificates can be installed using OpenSSL [Download](https://slproweb.com/products/Win32OpenSSL.html). Make sure to add OpenSSL to system path before proceeding forward to downloading certificates. 
+
+2. Open cmd. Type the following commands to create a CA key for the client
+    ```sh
+    openssl genpkey -algorithm RSA -out client-ca.key
+    ```
+3. Create a CA certificate using the CA key
+    ```sh
+    openssl req -new -x509 -key client-ca.key -out client-ca.crt -days 365 -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=client-ca"
+    ```
+4. Create a broker key without encryption
+    ```sh
+    openssl genpkey -algorithm RSA -out broker.key
+    ```
+5. Request for broker certificate
+    ```sh
+    openssl req -new -key broker.key -out broker.csr -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=broker"
+    ```
+6. Create a broker certificate
+    ```sh
+    openssl x509 -req -in broker.csr -CA client-ca.crt -CAkey client-ca.key -CA createserial -out broker.crt -days 365
+    ```
+
 ## Usage
 
 ### Running the Project without TLS Encryption
@@ -75,13 +101,15 @@ To run the project without TLS encryption
 
 To run the project with TLS encryption
 
-1. Update the mosquitto.conf file by adding the following lines-
+1. Update the `mosquitto.conf` file by adding the following lines-
     ```
     listener 8883
+
     allow_anonymous true
-    cafile <p><path to ca.crt>
-    keyfile <p><path to server.key>
-    certfile <p><path to server.crt>
+    
+    cafile <path to ca.crt>
+    keyfile <path to server.key>
+    certfile <path to server.crt>
 
     tls_version tlsv1.2
     ```
