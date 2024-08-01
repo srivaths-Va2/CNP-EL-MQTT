@@ -1,17 +1,22 @@
 {
     "systemparams":{
-        "mqtt_port":1883,
+        "mqtt_port":8883,
         "mqtt_host":"localhost",
         "mqtt_timeout":60,
         "mqtt_qos":0
     },
     "messageparams":{
         "msg_topic":"test/status",
-        "payload":"Hello World!"
+        "payload":"Hello World! I am Srivaths"
     },
     "logging":{
-        "log_dir":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\CNP-EL-MQTT\\logs",
+        "log_dir":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\code\\logs",
         "filename":"mqtt_log.log",
-        "level":"DEBUG"
+        "level":"WARNING"
+    },
+    "tlsparams":{
+        "ca_certs":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\code\\certs\\ca.crt",
+        "certfile":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\code\\certs\\server.crt",
+        "keyfile":"C:\\RV-COLLEGE-OF-ENGINEERING\\Sixth Semester\\CNP\\EL\\MQTT_protocol\\code\\certs\\server.key"
     }
 }

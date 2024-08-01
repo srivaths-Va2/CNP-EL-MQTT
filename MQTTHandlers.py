@@ -56,7 +56,6 @@ class MQTTPublish:
 
         self.start_time = time.time()
 
-
     def connect(self):
         """
         Method to establish connection with the MQTT broker.
@@ -134,6 +133,124 @@ class MQTTPublish:
         self.connect()
         self.run()
 
+class MQTTPublish_TLS:
+    """
+    Class for handling MQTT publishing over TLS.
+
+    Attributes:
+        client: MQTT client object for publishing messages.
+        port: Port number for MQTT connection.
+        timeout: Timeout value for MQTT connection.
+        host: Host address for MQTT connection.
+        topic: Topic to publish messages to.
+        message: Message payload to publish.
+        qos: Quality of Service level for publishing.
+        start_time: Start time of the publishing process.
+
+    Methods:
+        tls_config: Configure TLS settings for the MQTT client.
+        connect: Establish connection with the MQTT broker.
+        publish: Publish a message to the specified topic.
+        run: Continuously publish messages until a time limit is reached.
+        disconnect: Disconnect from the MQTT broker.
+        start_loop: Start the MQTT publishing loop by connecting, subscribing, and running the loop.
+    """
+    def __init__(self) -> None:
+        self.client = paho.Client(paho.CallbackAPIVersion.VERSION1)
+
+        self.port = JSON_Parser().get_mqtt_port()
+        self.timeout = JSON_Parser().get_mqtt_timeout()
+        self.host = JSON_Parser().get_mqtt_host()
+
+        self.topic = JSON_Parser().get_msg_topic()
+        self.message = JSON_Parser().get_msg_payload()
+        self.qos = JSON_Parser().get_mqtt_qos()
+
+        self.ca_certs = JSON_Parser().get_tlsparams_cacerts()
+        self.cafile = JSON_Parser().get_tlsparams_certfile()
+        self.keyfile = JSON_Parser().get_tlsparams_keyfile()
+
+        self.start_time = time.time() 
+
+    def tls_config(self):
+        """
+        Configure TLS settings for the MQTT client.
+
+        Sets the CA certificates, server certificate, and server key for TLS encryption.
+        Also sets TLS insecure mode to True for non-verified connections.
+        """
+        self.client.tls_set(ca_certs=self.ca_certs,
+                            certfile=self.cafile,
+                            keyfile=self.keyfile)
+        
+        self.client.tls_insecure_set(True)
+
+    def connect(self):
+        """
+        Establishes a connection with the MQTT broker using the specified host, port, and timeout values. 
+        Logs an error message and exits if the connection fails, otherwise logs a success message.
+        """
+        self.client_result = self.client.connect(host=self.host, port=8883, keepalive=self.timeout)
+        if self.client_result != 0:
+            # print("Could not connect to client!")
+            LOGGER.error("PUB : Could not connect to client!")
+            sys.exit(-1)
+
+        elif self.client_result == 0:
+            # print("Connection to client established!")
+            LOGGER.info("PUB : Connection to client established!")
+    
+    def publish(self):
+        self.client.publish(self.topic, self.message, self.qos)
+    
+    def run(self):
+        """
+        Continuously publishes messages until a time limit is reached.
+
+        Prints a message to prompt the user to exit by pressing CTRL+C.
+        Logs the process of running the publish loop and publishing a message to the network.
+        Sleeps for 5 seconds after each message publication.
+        If the time limit of 200 seconds is reached, logs a warning and disconnects from the broker.
+        In case of any exceptions, logs a warning and disconnects from the broker.
+
+        Returns:
+            None
+        """
+        while True:
+            try:
+                print("Press CTRL+C to exit....")
+                LOGGER.debug("PUB : Running the publish loop")
+                self.publish()
+                LOGGER.debug("PUB : Published message to network")
+                time.sleep(5)
+
+                if (time.time() - self.start_time >= 200):
+                    # print("Disconnecting the publisher....")
+                    LOGGER.warning("PUB : Disconnecting from broker!")
+                    self.disconnect()
+                    break 
+            except:
+                # print("Disconnecting from broker!")
+                LOGGER.warning("PUB : Disconnecting from broker!")
+                self.disconnect()
+    
+    def disconnect(self):
+        """
+        Disconnects the MQTT client from the network.
+
+        Logs an 'INFO' message indicating successful disconnection from the network.
+        """
+        self.client.disconnect()
+        LOGGER.info("PUB : Disconnected from network!")
+    
+    def start_loop(self):
+        """
+        Starts the MQTT publishing loop by configuring TLS settings, establishing a connection with the MQTT broker, and running the message publishing loop continuously until a time limit is reached.
+        """
+        self.tls_config()
+        self.connect()
+        self.run()
+
 class MQTTSubscribe:
     """
     Class to handle MQTT subscribing functionality.
@@ -166,6 +283,9 @@ class MQTTSubscribe:
         self.topic = JSON_Parser().get_msg_topic()
         self.message = JSON_Parser().get_msg_payload()
         self.qos = JSON_Parser().get_mqtt_qos()
+    
+    # def tls_config(self):
+    #     self.client.tls_set("C:\RV-COLLEGE-OF-ENGINEERING\Sixth Semester\CNP\EL\MQTT_protocol\code\certs\ca.crt")
 
     def connect(self):
         """
@@ -200,6 +320,7 @@ class MQTTSubscribe:
         """
         try:
             print("Press CTRL+C to exit....")
+            print(LOG_DIR)          # For debugging only
             LOGGER.info("SUB : Subscriber waiting for packets")
             self.client.loop_forever()
         except:
@@ -231,6 +352,7 @@ class MQTTSubscribe:
         Returns:
             None
         """
+        # self.tls_config()
         self.connect()
         self.subscribe()
         self.run()
