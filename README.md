@@ -69,6 +69,9 @@ The following tools are required in addition to Python3:
     ```sh
     openssl x509 -req -in broker.csr -CA client-ca.crt -CAkey client-ca.key -CA createserial -out broker.crt -days 365
     ```
+7. The certificates that are required for us include the `ca.crt`, `server.csr` and `server.key`. Create a new folder under the mosquitto directory called `certs` and save the above three files in there.
+
+8. Also make a copy of the certificate files to store in a folder called `certs` in the local project folder. In config.json, add the paths to the certicates in the `tlsparams` key. 
 
 ## Usage
 
