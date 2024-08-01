@@ -75,22 +75,36 @@ To run the project without TLS encryption
 
 To run the project with TLS encryption
 
-1. Start the Mosquitto broker on cmd-
+1. Update the mosquitto.conf file by adding the following lines-
+    ```
+    listener 8883
+
+allow_anonymous true
+
+
+cafile <p><path to ca.crt>
+keyfile <p><path to server.key>
+certfile <p><path to server.crt>
+
+tls_version tlsv1.2
+    ```
+
+2. Start the Mosquitto broker on cmd-
     ```sh
     mosquitto -c "<path to your mosquitto.conf file>" -v
     ```
     This would initialise the mosquitto broker in verbose mode, borrowing the settings added for TLS in the mosquitto.conf file and all logs would be displayed on the command line
 
-2. Ensure that the value of `mqtt_port` in `config.json` is set to 8883, the default port for TLS encryption.
+3. Ensure that the value of `mqtt_port` in `config.json` is set to 8883, the default port for TLS encryption.
 
-2. Run the subscriber script on python-
+4. Run the subscriber script on python-
     ```sh
     py sub.py run
     ```
 
-3. Run the publisher-TLS script on python in another commandline window-
+5. Run the publisher-TLS script on python in another commandline window-
     ```sh
     py pub_tls.py run
     ```
 
-4. After running the publisher, open Wireshark in **Adaptive for Loopback Traffic Capture** mode. Set the filter value to `tls` if only the TLS packets are to be filtered. One may also perform network statistics and throughput computation directly from Wireshark.
+6. After running the publisher, open Wireshark in **Adaptive for Loopback Traffic Capture** mode. Set the filter value to `tls` if only the TLS packets are to be filtered. One may also perform network statistics and throughput computation directly from Wireshark.
