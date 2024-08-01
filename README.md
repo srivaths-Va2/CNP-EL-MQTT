@@ -40,18 +40,57 @@ The following tools are required in addition to Python3:
     [Download](https://mosquitto.org/download/)
 
 
+5. Install Wireshark. The link to installation can be found here
+    [Download](https://www.wireshark.org/download.html)
+
+
 ## Usage
 
-### Running the Publisher
+### Running the Project without TLS Encryption
 
-To run the MQTT publisher script:
-```sh
-py pub.py run
-```
+To run the project without TLS encryption
 
-### Running the Subscriber
+1. Start the Mosquitto broker on cmd-
+    ```sh
+    mosquitto -v
+    ```
+    This would initialise the mosquitto broker in verbose mode, and all logs would be displayed on the command line
 
-To run the MQTT subscriber script
-```sh
-py sub.py run
-```
+2. Ensure that the value of `mqtt_port` in `config.json` is set to 1883, the default port for MQTT protocol.
+
+2. Run the subscriber script on python-
+    ```sh
+    py sub.py run
+    ```
+
+3. Run the publisher script on python in another commandline window-
+    ```sh
+    py pub.py run
+    ```
+
+4. After running the publisher, open Wireshark in **Adaptive for Loopback Traffic Capture** mode. Set the filter value to `mqtt` if only the MQTT packets are to be filtered. One may also perform network statistics and throughput computation directly from Wireshark.
+
+
+### Running the Project with TLS Encryption
+
+To run the project with TLS encryption
+
+1. Start the Mosquitto broker on cmd-
+    ```sh
+    mosquitto -c "<path to your mosquitto.conf file>" -v
+    ```
+    This would initialise the mosquitto broker in verbose mode, borrowing the settings added for TLS in the mosquitto.conf file and all logs would be displayed on the command line
+
+2. Ensure that the value of `mqtt_port` in `config.json` is set to 8883, the default port for TLS encryption.
+
+2. Run the subscriber script on python-
+    ```sh
+    py sub.py run
+    ```
+
+3. Run the publisher-TLS script on python in another commandline window-
+    ```sh
+    py pub_tls.py run
+    ```
+
+4. After running the publisher, open Wireshark in **Adaptive for Loopback Traffic Capture** mode. Set the filter value to `tls` if only the TLS packets are to be filtered. One may also perform network statistics and throughput computation directly from Wireshark.
