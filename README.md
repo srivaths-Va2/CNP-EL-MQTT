@@ -78,15 +78,12 @@ To run the project with TLS encryption
 1. Update the mosquitto.conf file by adding the following lines-
     ```
     listener 8883
+    allow_anonymous true
+    cafile <p><path to ca.crt>
+    keyfile <p><path to server.key>
+    certfile <p><path to server.crt>
 
-allow_anonymous true
-
-
-cafile <p><path to ca.crt>
-keyfile <p><path to server.key>
-certfile <p><path to server.crt>
-
-tls_version tlsv1.2
+    tls_version tlsv1.2
     ```
 
 2. Start the Mosquitto broker on cmd-
